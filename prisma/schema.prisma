@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  phone     String   @unique @db.VarChar(15)
+  password  String   @db.VarChar(255)
+  isAdmin   Boolean  @default(false) @map("is_admin")
+  age       Int?
+  gender    Gender?
+  region    Region?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  audioTrainingFiles AudioTrainingFile[]
+
+  @@map("users")
+}
+
+model AudioTrainingFile {
+  id               Int            @id @default(autoincrement())
+  userId           Int            @map("user_id")
+  filePath         String         @map("file_path") @db.VarChar(500)
+  contentVietnamese String?       @map("content_vietnamese") @db.Text
+  contentKorean    String?        @map("content_korean") @db.Text
+  trainingStatus   TrainingStatus @default(pending) @map("training_status")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("audio_training_files")
+}
+
+enum Gender {
+  male   @map("male")
+  female @map("female")
+  other  @map("other")
+}
+
+enum Region {
+  bac   @map("bac")
+  trung @map("trung")
+  nam   @map("nam")
+}
+
+enum TrainingStatus {
+  pending  @map("pending")
+  approved @map("approved")
+  rejected @map("rejected")
+}

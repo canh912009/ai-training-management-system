@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  nextjs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-training-nextjs
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=mysql://ai_user:ai_password@mariadb:3306/ai_training_db
+      - NEXTAUTH_SECRET=your-super-secret-key-change-this-in-production
+      - NEXTAUTH_URL=http://localhost:3000
+      - JWT_SECRET=jwt-super-secret-key-change-this-in-production
+      - UPLOAD_DIR=/app/uploads
+    depends_on:
+      - mariadb
+    volumes:
+      - ./uploads:/app/uploads
+      - ./src:/app/src
+      - ./public:/app/public
+    networks:
+      - ai-training-network
+
+  mariadb:
+    image: mariadb:11.2
+    container_name: ai-training-mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=ai_training_db
+      - MYSQL_USER=ai_user
+      - MYSQL_PASSWORD=ai_password
+    ports:
+      - "3308:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ai-training-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ai-training-phpmyadmin
+    environment:
+      - PMA_HOST=mariadb
+      - PMA_PORT=3306
+      - PMA_USER=ai_user
+      - PMA_PASSWORD=ai_password
+    ports:
+      - "8080:80"
+    depends_on:
+      - mariadb
+    networks:
+      - ai-training-network
+
+volumes:
+  mariadb_data:
+
+networks:
+  ai-training-network:
+    driver: bridge

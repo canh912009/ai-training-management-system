@@ -1,0 +1,53 @@
+'use client'
+
+import { Button } from '@/components/ui/button'
+import { LogOut, User } from 'lucide-react'
+import { useState } from 'react'
+
+export function AdminHeader() {
+    const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+    const handleLogout = async () => {
+        setIsLoggingOut(true)
+        // TODO: Implement logout logic
+        try {
+            // Clear auth tokens, redirect to login
+            window.location.href = '/'
+        } catch (error) {
+            console.error('Logout error:', error)
+        } finally {
+            setIsLoggingOut(false)
+        }
+    }
+
+    return (
+        <header className="bg-white shadow-sm border-b">
+            <div className="px-6 py-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                        <h1 className="text-xl font-bold text-gray-900">
+                            AI Training Admin Panel
+                        </h1>
+                    </div>
+
+                    <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                            <User className="w-4 h-4" />
+                            <span>Admin User</span>
+                        </div>
+
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleLogout}
+                            disabled={isLoggingOut}
+                        >
+                            <LogOut className="w-4 h-4 mr-2" />
+                            {isLoggingOut ? 'Đang đăng xuất...' : 'Đăng xuất'}
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </header>
+    )
+}
