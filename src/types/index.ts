@@ -10,15 +10,15 @@ export enum TrainingStatus {
 }
 
 export enum Gender {
-    MALE = 'male',
-    FEMALE = 'female',
-    OTHER = 'other'
+    MALE = 'M',
+    FEMALE = 'F',
+    OTHER = 'O'
 }
 
 export enum Region {
-    BAC = 'bac',
-    TRUNG = 'trung',
-    NAM = 'nam'
+    BAC = 'N',
+    TRUNG = 'M',
+    NAM = 'S'
 }
 
 // Interfaces
