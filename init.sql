@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     is_admin BOOLEAN DEFAULT FALSE,
     age INT,
-    gender ENUM('male', 'female', 'other'),
-    region ENUM('bac', 'trung', 'nam'),
+    gender ENUM('M', 'F', 'O'),
+    region ENUM('N', 'M', 'S'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
