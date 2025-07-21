@@ -43,6 +43,9 @@ export async function POST(request: NextRequest) {
             userId: user.id,
             phone: user.phone,
             isAdmin: user.isAdmin,
+            age: user.age || undefined,
+            gender: user.gender || undefined,
+            region: user.region || undefined,
         })
 
         const userData = {

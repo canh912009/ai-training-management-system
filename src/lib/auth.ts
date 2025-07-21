@@ -9,6 +9,9 @@ export interface JWTPayload {
     userId: number
     phone: string
     isAdmin: boolean
+    age?: number
+    gender?: string
+    region?: string
 }
 
 export async function hashPassword(password: string): Promise<string> {

@@ -114,6 +114,25 @@ export default function AdminUsersPage() {
         }
     }
 
+    const getAgeBadge = (age?: number) => {
+        if (!age && age !== 0) return <Badge variant="outline">N/A</Badge>
+        
+        switch (age) {
+            case 0:
+                return <Badge variant="secondary">0~10</Badge>
+            case 1:
+                return <Badge variant="secondary">11~20</Badge>
+            case 2:
+                return <Badge variant="default">21~40</Badge>
+            case 4:
+                return <Badge variant="secondary">41~60</Badge>
+            case 6:
+                return <Badge variant="outline">61~</Badge>
+            default:
+                return <Badge variant="outline">N/A</Badge>
+        }
+    }
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -212,7 +231,7 @@ export default function AdminUsersPage() {
                                         <TableRow key={user.id}>
                                             <TableCell className="font-medium">{user.id}</TableCell>
                                             <TableCell>{user.phone}</TableCell>
-                                            <TableCell>{user.age || 'N/A'}</TableCell>
+                                            <TableCell>{getAgeBadge(user.age)}</TableCell>
                                             <TableCell>{getGenderBadge(user.gender)}</TableCell>
                                             <TableCell>{getRegionBadge(user.region)}</TableCell>
                                             <TableCell>
