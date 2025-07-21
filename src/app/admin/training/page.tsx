@@ -77,7 +77,7 @@ export default function AdminTrainingPage() {
             setLoading(true)
             const params = new URLSearchParams({
                 page: page.toString(),
-                limit: '10',
+                limit: '25',
                 ...(statusFilter !== CommonFilter.ALL && { status: statusFilter }),
                 ...(phoneSearch && { phone: phoneSearch }),
             })
@@ -274,11 +274,11 @@ export default function AdminTrainingPage() {
         }
     }
 
-    const exportApprovedFiles = async () => {
+    const downloadFilesSelected = async () => {
         try {
             addToast({
                 title: 'Thông báo',
-                description: 'Tính năng xuất file đã duyệt đang được phát triển',
+                description: 'Tính năng download file đã chọn đang được phát triển',
                 variant: 'default'
             })
         } catch (error) {
@@ -290,7 +290,7 @@ export default function AdminTrainingPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-gray-900">Quản lý File Training</h1>
-                <Button onClick={exportApprovedFiles} variant="outline">
+                <Button onClick={downloadFilesSelected} variant="outline">
                     <Download className="w-4 h-4 mr-2" />
                     Xuất file đã duyệt
                 </Button>
@@ -419,6 +419,16 @@ export default function AdminTrainingPage() {
                         </div>
                     ) : (
                         <>
+                            {/* Thêm style cho table để cột File rộng hơn */}
+                            <style jsx global>{`
+                                .file-column {
+                                    min-width: 250px;
+                                    max-width: 400px;
+                                    white-space: normal;
+                                    word-break: break-all;
+                                }
+                            `}</style>
+
                             <Table>
                                 <TableHeader>
                                     <TableRow>
@@ -430,12 +440,12 @@ export default function AdminTrainingPage() {
                                                 className="rounded"
                                             />
                                         </TableHead>
-                                        <TableHead>ID</TableHead>
-                                        <TableHead>Người dùng</TableHead>
-                                        <TableHead>File</TableHead>
-                                        <TableHead>Trạng thái</TableHead>
-                                        <TableHead>Ngày tạo</TableHead>
-                                        <TableHead>Thao tác</TableHead>
+                                        <TableHead className="w-16">ID</TableHead>
+                                        <TableHead className="w-48">Người dùng</TableHead>
+                                        <TableHead className="file-column">File</TableHead>
+                                        <TableHead className="w-40">Trạng thái</TableHead>
+                                        <TableHead className="w-40">Ngày tạo</TableHead>
+                                        <TableHead className="w-40">Thao tác</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -453,8 +463,8 @@ export default function AdminTrainingPage() {
                                             <TableCell>{file.user?.phone}</TableCell>
                                             <TableCell>
                                                 <div className="flex items-center space-x-2">
-                                                    <FileAudio className="w-4 h-4" />
-                                                    <span className="text-sm truncate max-w-32">
+                                                    <FileAudio className="w-4 h-4 flex-shrink-0" />
+                                                    <span className="text-sm break-all">
                                                         {file.filePath.split('/').pop()}
                                                     </span>
                                                 </div>
