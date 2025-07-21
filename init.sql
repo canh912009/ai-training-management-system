@@ -41,7 +41,7 @@ CREATE INDEX IF NOT EXISTS idx_audio_files_created_at ON audio_training_files(cr
 
 -- Insert sample data for testing
 INSERT INTO users (phone, password, age, gender, region) VALUES
-('0987654321', '$2a$12$BRWdAj6Wn0Y4GQ9EZyNxsOaf/72zoKaCIdL4hQCRJCsttRai3aupu', 25, 'male', 'bac'),
-('0345678901', '$2a$12$BRWdAj6Wn0Y4GQ9EZyNxsOaf/72zoKaCIdL4hQCRJCsttRai3aupu', 30, 'female', 'trung'),
-('0456789012', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewVyh7myM3/4sJOa', 28, 'male', 'nam')
+('0987654321', '$2a$12$BRWdAj6Wn0Y4GQ9EZyNxsOaf/72zoKaCIdL4hQCRJCsttRai3aupu', 25, 'M', 'N'),
+('0345678901', '$2a$12$BRWdAj6Wn0Y4GQ9EZyNxsOaf/72zoKaCIdL4hQCRJCsttRai3aupu', 30, 'F', 'M'),
+('0456789012', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewVyh7myM3/4sJOa', 28, 'M', 'S')
 ON DUPLICATE KEY UPDATE phone = phone;

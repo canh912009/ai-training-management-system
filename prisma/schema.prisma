@@ -41,15 +41,15 @@ model AudioTrainingFile {
 }
 
 enum Gender {
-  male   @map("M")
-  female @map("F")
-  other  @map("O")
+  M @map("M")
+  F @map("F")
+  O @map("O")
 }
 
 enum Region {
-  bac   @map("N")
-  trung @map("M")
-  nam   @map("S")
+  N @map("N")
+  M @map("M")
+  S @map("S")
 }
 
 enum TrainingStatus {
