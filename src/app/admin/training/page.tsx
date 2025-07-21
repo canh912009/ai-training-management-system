@@ -275,14 +275,65 @@ export default function AdminTrainingPage() {
     }
 
     const downloadFilesSelected = async () => {
+        if (selectedFiles.length === 0) {
+            showError('Lỗi', 'Vui lòng chọn ít nhất một file để tải về')
+            return
+        }
+
         try {
+            setBulkUpdateLoading(true)
             addToast({
-                title: 'Thông báo',
-                description: 'Tính năng download file đã chọn đang được phát triển',
+                title: 'Đang chuẩn bị',
+                description: `Đang tạo file ZIP cho ${selectedFiles.length} file...`,
                 variant: 'default'
             })
+
+            console.log('Downloading files:', selectedFiles) // Debug log
+
+            const response = await fetch('/api/admin/training-files/download', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                },
+                body: JSON.stringify({
+                    fileIds: selectedFiles
+                })
+            })
+
+            console.log('Response status:', response.status) // Debug log
+
+            if (!response.ok) {
+                const errorData = await response.json()
+                console.error('API Error:', errorData) // Debug log
+                throw new Error(errorData.error || 'Không thể tải file')
+            }
+
+            // Get filename from response header
+            const contentDisposition = response.headers.get('content-disposition')
+            const filename = contentDisposition 
+                ? contentDisposition.split('filename=')[1]?.replace(/"/g, '')
+                : `training-files-${new Date().toISOString().split('T')[0]}.zip`
+
+            // Download file
+            const blob = await response.blob()
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = filename
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+
+            success('Tải thành công', `Đã tải ${selectedFiles.length} file`)
+            setSelectedFiles([]) // Clear selection after download
+
         } catch (error) {
-            console.error('Export error:', error)
+            console.error('Download error:', error)
+            showError('Lỗi', `Có lỗi xảy ra khi tải file: ${error?.message}`)
+        } finally {
+            setBulkUpdateLoading(false)
         }
     }
 
@@ -292,7 +343,7 @@ export default function AdminTrainingPage() {
                 <h1 className="text-2xl font-bold text-gray-900">Quản lý File Training</h1>
                 <Button onClick={downloadFilesSelected} variant="outline">
                     <Download className="w-4 h-4 mr-2" />
-                    Xuất file đã duyệt
+                    Download file đã chọn
                 </Button>
             </div>
 
