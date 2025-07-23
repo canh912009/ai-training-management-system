@@ -22,50 +22,45 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        // Find user
+        // Find user with matching criteria
+        const whereCondition: any = { phone }
+
+        // Add optional filters if provided
+        if (age !== undefined) whereCondition.age = age
+        if (gender) whereCondition.gender = gender  
+        if (region) whereCondition.region = region
+
         const user = await db.user.findUnique({
-            where: { phone }
+            where: whereCondition
         })
 
         if (!user) {
             return NextResponse.json(
-                createApiResponse(false, null, null, 'Số điện thoại không tồn tại'),
+                createApiResponse(false, null, null, 'Thông tin người dùng không khớp'),
                 { status: 401 }
             )
         }
 
-        // Update user profile if additional info provided
-        let updatedUser = user
-        if (age || gender || region) {
-            updatedUser = await db.user.update({
-                where: { id: user.id },
-                data: {
-                    ...(age && { age }),
-                    ...(gender && { gender }),
-                    ...(region && { region }),
-                },
-            })
-        }
-
-        // Generate token
+        // Remove the update logic since we're now matching exact data
+        // Generate token directly with found user
         const token = generateToken({
-            userId: updatedUser.id,
-            phone: updatedUser.phone,
-            isAdmin: updatedUser.isAdmin,
-            age: updatedUser.age || undefined,
-            gender: updatedUser.gender || undefined,
-            region: updatedUser.region || undefined,
+            userId: user.id,
+            phone: user.phone,
+            isAdmin: user.isAdmin,
+            age: user.age || undefined,
+            gender: user.gender || undefined,
+            region: user.region || undefined,
         })
 
         const userData = {
-            id: updatedUser.id,
-            phone: updatedUser.phone,
-            isAdmin: updatedUser.isAdmin,
-            age: updatedUser.age,
-            gender: updatedUser.gender,
-            region: updatedUser.region,
-            createdAt: updatedUser.createdAt,
-            updatedAt: updatedUser.updatedAt,
+            id: user.id,
+            phone: user.phone,
+            isAdmin: user.isAdmin,
+            age: user.age,
+            gender: user.gender,
+            region: user.region,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
         }
 
         return NextResponse.json(
