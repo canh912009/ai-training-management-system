@@ -94,11 +94,13 @@ export async function POST(request: NextRequest) {
                     const filePath = path.join(uploadDir, file.filePath)
                     
                     if (existsSync(filePath)) {
-                        // Create safe filename: phone_originalname
+                        // Extract filename: remove  userId_timestamp_ prefix, keep only the last part
                         const originalName = file.filePath.split('/').pop() || 'unknown'
-                        const safeFilename = `${file.user?.phone || 'unknown'}_${originalName}`
-                        
-                        archive.file(filePath, { name: safeFilename })
+                        const parts = originalName.split('_')
+                        // Remove first 2 parts (userId and timestamp), keep the rest
+                        const cleanFilename = parts.length > 2 ? parts.slice(2).join('_') : originalName
+
+                        archive.file(filePath, { name: cleanFilename })
                         addedFiles++
                     }
                 })
